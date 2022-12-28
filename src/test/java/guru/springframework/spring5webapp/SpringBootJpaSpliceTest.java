@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.Rollback;
@@ -18,6 +19,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DataJpaTest // performs a minimalistic autoconfiguration in which DataInitializer bean is not run ... Annotation that can be used in combination with @RunWith(SpringRunner.class) for a typical JPA test. Can be used when a test focuses only on JPA components.
 @RunWith(SpringRunner.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class SpringBootJpaSpliceTest {
     @Autowired
     BookRepository bookRepository;
@@ -27,6 +29,7 @@ public class SpringBootJpaSpliceTest {
     @Order(1)
     @Test
     public void testJpaTestSplice(){
+        bookRepository.deleteAll();
         long countBefore = bookRepository.count();
         assertThat(countBefore).isZero();
 
